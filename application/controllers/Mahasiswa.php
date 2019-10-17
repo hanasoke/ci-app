@@ -16,6 +16,9 @@ class Mahasiswa extends CI_Controller {
         // var_dump(site_url());
         $data['head'] = 'Daftar Mahasiswa';
         $data['mahasiswa'] = $this->Mahasiswa_model->getAllMahasiswa();
+        if ($this->input->post('keyword')) {
+            $data['mahasiswa'] = $this->Mahasiswa_model->cariDataMahasiswa();
+        }
         $this->load->view('templates/header', $data);
         $this->load->view('mahasiswa/index', $data);
         $this->load->view('templates/footer');
@@ -60,5 +63,32 @@ class Mahasiswa extends CI_Controller {
         $this->load->view('templates/header', $data);
         $this->load->view('mahasiswa/detail', $data);
         $this->load->view('templates/footer');
+    }
+
+    public function ubah($id)
+    {
+        $data['head'] = 'Form Ubah Data Mahasiswa';
+        $data['mahasiswa'] = $this->Mahasiswa_model->getMahasiswaById($id);
+        $data['jurusan'] = ['Teknik Informatika', 'Teknik Industri', 'Sistem Informasi', 'Teknik Jaringan'];
+
+        $this->form_validation->set_rules('nama', 'Nama', 'required');
+        $this->form_validation->set_rules('nim', 'NIM', 'required|numeric');
+        $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
+        
+
+        if ($this->form_validation->run() == FALSE ) {
+            $data['head'] = 'Form Tambah Data Mahasiswa';
+            $this->load->view('templates/header', $data);
+            $this->load->view('mahasiswa/ubah', $data);
+            $this->load->view('templates/footer');
+        } else {
+            // test
+            // echo "Berhasil!";
+
+            // insert ke database
+            $this->Mahasiswa_model->ubahDataMahasiswa();
+            $this->session->set_flashdata('flash', 'Diubah');
+            redirect('mahasiswa');
+        }
     }
 }
