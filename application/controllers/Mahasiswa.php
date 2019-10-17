@@ -12,6 +12,8 @@ class Mahasiswa extends CI_Controller {
     
     public function index()
     {
+        // var_dump(base_url());
+        // var_dump(site_url());
         $data['head'] = 'Daftar Mahasiswa';
         $data['mahasiswa'] = $this->Mahasiswa_model->getAllMahasiswa();
         $this->load->view('templates/header', $data);
@@ -49,5 +51,14 @@ class Mahasiswa extends CI_Controller {
         $this->Mahasiswa_model->hapusDataMahasiswa($id);
         $this->session->set_flashdata('flash', 'Dihapus');
         redirect('mahasiswa');
+    }
+
+    public function detail($id)
+    {
+        $data['head'] = 'Detail Data Mahasiswa';
+        $data['mahasiswa'] = $this->Mahasiswa_model->getMahasiswaById($id);
+        $this->load->view('templates/header', $data);
+        $this->load->view('mahasiswa/detail', $data);
+        $this->load->view('templates/footer');
     }
 }
